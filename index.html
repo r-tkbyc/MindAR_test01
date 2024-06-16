@@ -17,10 +17,10 @@
       <a-entity light="type:directional; castShadow:true;" position="1 1 1"></a-entity>
       
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90" shadow="receive: false"></a-plane>
+        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90" shadow="receive: ture"></a-plane>
         <!-- <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.005 0.005 0.005" src="#avatarModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"> -->
         <a-entity rotation="90 0 0">
-          <a-gltf-model rotation="0 15 0" position="0 0.5 -0.25" scale="0.75 0.75 0.75" src="#avatarModel" shadow="receive: false" animation="property: rotation; to: 0 -15 0; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate"></a-gltf-model>
+          <a-gltf-model rotation="0 15 0" position="0 0.5 0.1" scale="0.75 0.75 0.75" src="#avatarModel" shadow="receive: false" animation="property: rotation; to: 0 -15 0; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate"></a-gltf-model>
         </a-entity>
       </a-entity>
     </a-scene>
