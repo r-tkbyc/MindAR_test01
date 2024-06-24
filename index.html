@@ -2,10 +2,25 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
-    <link rel="stylesheet" href="css/style.css">
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      html {
+        font-size: 100%;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 100vh;
+      }
+      .btn {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem 2rem;
+        border-radius: 0.7rem;
+      }
+    </style>
   </head>
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -22,7 +37,13 @@
 
       <div class="container">
         <button id="btn" class="btn">start</button>
-        <script src="js/script.js"></script>
+        <script>
+          const btn = document.getElementById('btn');
+          const item = document.getElementById('item');
+          btn.addEventListener('click', () => {
+            item.emit('btnPush');
+          });
+        </script>
       </div>
     </a-scene>
   </body>
