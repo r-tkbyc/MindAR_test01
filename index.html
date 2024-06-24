@@ -5,13 +5,11 @@
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        height: 100vh;
-      }
       .btn {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
         background-color: #333;
         color: #fff;
         padding: 1rem 2.5rem;
@@ -33,7 +31,7 @@
       </a-entity>
 
       <div class="container">
-        <button id="btn" class="btn">start3</button>
+        <button id="btn" class="btn">start4</button>
         <script>
           const btn = document.getElementById("btn");
           const item = document.getElementById("item");
