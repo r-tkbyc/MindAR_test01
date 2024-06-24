@@ -1,4 +1,5 @@
 const btn = document.getElementById('btn');
+const item = document.getElementById('item');
 btn.addEventListener('click', () => {
-  console.log('click!!');
+  item.emit('btnPush');
 });
