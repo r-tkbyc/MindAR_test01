@@ -31,16 +31,16 @@
       </a-entity>
 
       <div class="container">
-        <button id="btn" class="btn">start6.2</button>
         <script>
           console.log("start!!!!")
-          const btn = document.querySelector("#btn");
-          const item = document.querySelector("#box");
+          const btn = document.getElementById("btn");
+          const item = document.getElementById("box");
           btn.addEventListener("click", () => {
             console.log("click!!!!")
             item.emit("btnPush");
           });
         </script>
+        <button id="btn" class="btn">start6.3</button>
       </div>
     </a-scene>
   </body>
