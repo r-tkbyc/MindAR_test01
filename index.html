@@ -27,10 +27,10 @@
       <a-entity mindar-image-target="targetIndex: 0">
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
         <!-- <a-gltf-model id="item" rotation="0 0 0 " position="0 0 0.1" scale="0.005 0.005 0.005" src="#avatarModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate; startEvents: btnPush"> -->
-        <a-box id="box" position="0 0 0" scale="0.5 0.5 0.5"; color="white" animation="property: rotation; from: 0 0 0; to: 0 360 360; dur: 3000; loop: true; easing: linear; startEvents: btnPush">
+        <a-box id="box" position="0 0.75 0" scale="0.25 0.25 0.25"; color="white" animation="property: rotation; from: 0 0 0; to: 0 360 360; dur: 3000; loop: true; easing: linear; startEvents: btnPush">
       </a-entity>
 
-      <div class="container">
+        <button id="btn" class="btn">start6.4</button>
         <script>
           console.log("start!!!!")
           const btn = document.getElementById("btn");
@@ -40,8 +40,6 @@
             item.emit("btnPush");
           });
         </script>
-        <button id="btn" class="btn">start6.3</button>
-      </div>
     </a-scene>
   </body>
 </html>
