@@ -31,12 +31,14 @@
       </a-entity>
 
       <div class="container">
-        <button id="btn" class="btn">start5.5</button>
+        <button id="btn" class="btn">start6</button>
         <script>
+          console.log("start!!!!")
           const btn = document.getElementById("btn");
           const item = document.getElementById("item");
           btn.addEventListener("click", () => {
-            item.emit("btnPush");
+            console.log("click!!!!")
+            // item.emit("btnPush");
           });
         </script>
       </div>
