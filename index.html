@@ -32,12 +32,10 @@
 
         <button id="btn" class="btn">start6.4</button>
         <script>
-          console.log("start!!!!")
           const btn = document.getElementById("btn");
-          const item = document.getElementById("box");
+          const box = document.getElementById("box");
           btn.addEventListener("click", () => {
-            console.log("click!!!!")
-            item.emit("btnPush");
+            box.emit("btnPush");
           });
         </script>
     </a-scene>
