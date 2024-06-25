@@ -31,14 +31,14 @@
       </a-entity>
 
       <div class="container">
-        <button id="btn" class="btn">start6</button>
+        <button id="btn" class="btn">start6.1</button>
         <script>
           console.log("start!!!!")
           const btn = document.getElementById("btn");
-          const item = document.getElementById("item");
+          const item = document.getElementById("box");
           btn.addEventListener("click", () => {
             console.log("click!!!!")
-            // item.emit("btnPush");
+            item.emit("btnPush");
           });
         </script>
       </div>
