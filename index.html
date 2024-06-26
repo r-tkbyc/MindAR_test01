@@ -1,47 +1,48 @@
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <style>
-      .btn {
-        position: absolute;
-        bottom: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #eee;
-        color: #333;
-        padding: 1rem 2.5rem;
-        border: 0;
-        border-radius: 0.3rem;
-      }
-    </style>
+    <title>glTF Animation Control</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   </head>
   <body>
-    <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      <a-assets>
-        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-        <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
-        <a-asset-item id="avatarModel2" src="model/model.glb"></a-asset-item>
-      </a-assets>
+    <button id="startButton">Start Animation</button>
+    <script>
+      let scene, camera, renderer, mixer, action;
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
-        <a-gltf-model id="item" rotation="90 0 0" position="0 0 0" scale="1 1 1" src="#avatarModel2" 
-                      animation="property: position; from: 0 0 0; to: 0 0 0.5; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate; startEvents: btnPush"
-                      animation-mixer>
-        </a-entity>
-    </a-scene>
+      init();
+      animate();
 
-    <button id="btn" class="btn">restart</button>
-      <script>
-        const btn = document.getElementById("btn");
-        const item = document.getElementById("item");
-        btn.addEventListener("click", () => {
-          item.emit("btnPush");
+      function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const loader = new THREE.GLTFLoader();
+        loader.load('model/model.glb', function(gltf) {
+          const model = gltf.scene;
+          scene.add(model);
+
+          mixer = new THREE.AnimationMixer(model);
+          action = mixer.clipAction(gltf.animations[0]);
+
+          camera.position.z = 5;
         });
-      </script>
+
+        const button = document.getElementById('startButton');
+        button.addEventListener('click', () => {
+          if (action) action.play();
+        });
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        if (mixer) mixer.update(0.01);
+
+        renderer.render(scene, camera);
+      }
+    </script>
   </body>
 </html>
