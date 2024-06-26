@@ -29,22 +29,40 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
-        <a-gltf-model id="item" rotation="90 0 0" position="0 0 1" scale="1 1 1" src="#avatarModel" animation-mixer></a-gltf-model>
+        <a-gltf-model id="item" rotation="90 0 0" position="0 0 0" scale="1 1 1" src="#avatarModel" animation-mixer="clip: *; loop: once; clampWhenFinished: true; crossFadeDuration: 0;"></a-gltf-model>
       </a-entity>
     </a-scene>
 
-    <button id="btn" class="btn">restart1.1</button>
+    <button id="btn" class="btn">restart1</button>
     <script>
       document.getElementById('btn').addEventListener('click', () => {
         const model = document.querySelector('#item');
         if (model) {
           const animationMixer = model.components['animation-mixer'];
           if (animationMixer) {
-            animationMixer.mixer.stopAllAction();
-            animationMixer.mixer.clipAction(model.getObject3D('mesh').animations[0]).play();
+            // アニメーションを再生
+            animationMixer.stopAllAction();
+            const clip = animationMixer.mixer._actions[0]._clip;
+            const action = animationMixer.mixer.clipAction(clip);
+            action.play();
           }
         }
       });
+
+      AFRAME.registerComponent('stop-animation-on-load', {
+        init: function () {
+          const el = this.el;
+          el.addEventListener('model-loaded', () => {
+            const model = el.getObject3D('mesh');
+            if (model && model.animations) {
+              const mixer = new THREE.AnimationMixer(model);
+              mixer.stopAllAction();
+            }
+          });
+        }
+      });
+
+      document.querySelector('#item').setAttribute('stop-animation-on-load', '');
     </script>
   </body>
 </html>
