@@ -33,13 +33,11 @@
         <!--a-gltf-model id="item" rotation="90 0 0" position="0 0 0" scale="1 1 1" src="#avatarModel" 
                       animation="property: position; from: 0 0 0; to: 0 0 0.5; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate; startEvents: btnPush"
                       animation-mixer-->
-        <a-gltf-model id="item" rotation="90 0 0" position="0 0 0" scale="1 1 1" src="#avatarModel" 
-                      animation="property: position; from: 0 0 0; to: 0 0 0.5; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate;"
-                      animation-mixer>
+        <a-gltf-model id="item" rotation="90 0 0" position="0 0 0" scale="1 1 1" src="#avatarModel" animation-mixer>
         </a-entity>
     </a-scene>
 
-    <button id="btn" class="btn">restart</button>
+    <button id="btn" class="btn">restart1</button>
     <script>
       let scene, camera, renderer, mixer, action;
 
@@ -54,7 +52,7 @@
         document.body.appendChild(renderer.domElement);
 
         const loader = new THREE.GLTFLoader();
-        loader.load('model/model.glb', function(gltf) {
+        loader.load('#item', function(gltf) {
           const model = gltf.scene;
           scene.add(model);
 
