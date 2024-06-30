@@ -34,9 +34,10 @@
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start2</button>
+    <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
     <script>
+      let isPaused = false;
       const btnStart = document.getElementById('btn-start');
       const btnPause = document.getElementById('btn-pause');
 
@@ -47,9 +48,13 @@
           if (animationMixer) {
             const actions = animationMixer.mixer._actions;
             if (actions.length > 0) {
-              actions.forEach(action => action.stop());
               const action = actions[0];
-              action.play();
+              if (isPaused) {
+                action.paused = false; // 一時停止を解除
+              } else {
+                action.play();
+              }
+              isPaused = false;
             }
           }
         }
@@ -64,7 +69,9 @@
           if (animationMixer) {
             const actions = animationMixer.mixer._actions;
             if (actions.length > 0) {
-              actions.forEach(action => action.paused = true);
+              const action = actions[0];
+              action.paused = true; // 一時停止
+              isPaused = true;
             }
           }
         }
