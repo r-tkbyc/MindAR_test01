@@ -34,10 +34,13 @@
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start</button>
-    <button id="btn-pause" class="btn">Pause</button>
+    <button id="btn-start" class="btn">Start2</button>
+    <button id="btn-pause" class="btn" style="display: none;">Pause</button>
     <script>
-      document.getElementById('btn-start').addEventListener('click', () => {
+      const btnStart = document.getElementById('btn-start');
+      const btnPause = document.getElementById('btn-pause');
+
+      btnStart.addEventListener('click', () => {
         const model = document.querySelector('#item');
         if (model) {
           const animationMixer = model.components['animation-mixer'];
@@ -50,9 +53,11 @@
             }
           }
         }
+        btnStart.style.display = 'none';
+        btnPause.style.display = 'block';
       });
 
-      document.getElementById('btn-pause').addEventListener('click', () => {
+      btnPause.addEventListener('click', () => {
         const model = document.querySelector('#item');
         if (model) {
           const animationMixer = model.components['animation-mixer'];
@@ -63,6 +68,8 @@
             }
           }
         }
+        btnPause.style.display = 'none';
+        btnStart.style.display = 'block';
       });
 
       AFRAME.registerComponent('stop-animation-on-load', {
