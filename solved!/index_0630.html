@@ -16,7 +16,6 @@
         padding: 1rem 2.5rem;
         border: 0;
         border-radius: 0.3rem;
-        margin: 0.5rem;
       }
     </style>
   </head>
@@ -34,10 +33,9 @@
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start</button>
-    <button id="btn-pause" class="btn">Pause</button>
+    <button id="btn" class="btn">Start1.3</button>
     <script>
-      document.getElementById('btn-start').addEventListener('click', () => {
+      document.getElementById('btn').addEventListener('click', () => {
         const model = document.querySelector('#item');
         if (model) {
           const animationMixer = model.components['animation-mixer'];
@@ -47,19 +45,6 @@
               actions.forEach(action => action.stop());
               const action = actions[0];
               action.play();
-            }
-          }
-        }
-      });
-
-      document.getElementById('btn-pause').addEventListener('click', () => {
-        const model = document.querySelector('#item');
-        if (model) {
-          const animationMixer = model.components['animation-mixer'];
-          if (animationMixer) {
-            const actions = animationMixer.mixer._actions;
-            if (actions.length > 0) {
-              actions.forEach(action => action.paused = true);
             }
           }
         }
