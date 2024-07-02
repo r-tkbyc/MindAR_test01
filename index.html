@@ -24,7 +24,7 @@
     <a-scene
       mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;"
       color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights, shadowMap: { type: 'pcfsoft' }"
+      renderer="colorManagement: true, physicallyCorrectLights, shadowMapEnabled: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
@@ -42,8 +42,7 @@
           position="0 0 0"
           scale="0.3 0.3 0.3"
           src="#avatarModel"
-          animation-mixer
-          shadow="cast: true; receive: false"
+          shadow="cast: true"
         ></a-gltf-model>
         <a-plane
           rotation="-90 0 0"
@@ -51,14 +50,15 @@
           height="10"
           color="#ffffff"
           shadow="receive: true"
-          position="0 0.1 0"
+          position="0 -0.1 0"
         ></a-plane>
+        <a-light type="directional" position="0 4 4" rotation="-45 0 0" castShadow="true" intensity="0.5"></a-light>
+        <a-light type="ambient" color="#ffffff" intensity="0.3"></a-light>
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start1.2</button>
+    <button id="btn-start" class="btn">Start1.3</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
-
     <script>
       let isPaused = false;
       const btnStart = document.getElementById('btn-start');
