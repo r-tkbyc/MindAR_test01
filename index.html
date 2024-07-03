@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -5,9 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    .text-color-red {
-      color: #FF0000;
-    }
+    .text-color-red { color: #FF0000; }
   </style>
 </head>
 <body>
@@ -21,7 +20,7 @@
       <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
     </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-camera position="0 0 0" look-controls="enabled: false" mindar-camera></a-camera>
 
     <a-entity light="type:ambient; intensity: 0.5"></a-entity>
     <a-entity light="type:directional; intensity: 0.8; castShadow: true;" position="-0.2 1 0.2"
@@ -32,7 +31,7 @@
                 animation="property: rotation; from: 0 0 0; to: 0 360 360; easing: linear; loop: true; dur: 5000;"></a-entity>
       <a-entity id="ground" position="0 -0.3 0" rotation="-90 0 0" width="1.5" height="1.5" shadow="receive: true"></a-entity>
     </a-entity>
-    <a-text class="text-color-red">Ver4.0</a-text>
+    <a-text class="text-color-red">Ver4.1</a-text>
   </a-scene>
 
   <script>
