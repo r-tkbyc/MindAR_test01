@@ -38,7 +38,7 @@
         <a-video src="#video" position="0 0 0.01" width="16" height="9" rotation="0 0 0" scale="0.075 0.075 0.075"></a-video>
       </a-entity>
 
-      <a-text class="color-red">Ver4.4.1</a-text>
+      <a-text class="color-red">Ver4.4.2</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
@@ -66,6 +66,7 @@
             }
           }
         }
+        document.querySelector('#video').play(); // 動画の再生
         btnStart.style.display = 'none';
         btnPause.style.display = 'block';
       });
@@ -83,6 +84,7 @@
             }
           }
         }
+        document.querySelector('#video').pause(); // 動画の一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
       });
