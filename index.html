@@ -1,10 +1,10 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
       .color-red {
         color: #FF0000;
@@ -33,12 +33,11 @@
 
       <a-camera look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane> -->
         <a-gltf-model id="item" position="0 0 0" rotation="40 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
-        <a-video src="#video" position="0 0 0.01" width="16" height="9" rotation="0 0 0" scale="0.075 0.075 0.075"></a-video>
+        <a-entity id="video-entity" position="0 0 0.01" rotation="0 0 0" scale="0.075 0.075 0.075" chroma-key></a-entity>
       </a-entity>
 
-      <a-text class="color-red">Ver4.4.8</a-text>
+      <a-text class="color-red">Ver4.4.9</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
@@ -103,6 +102,50 @@
       });
 
       document.querySelector('#item').setAttribute('stop-animation-on-load', '');
+
+      // クロマキー処理を行うカスタムコンポーネントを登録
+      AFRAME.registerComponent('chroma-key', {
+        schema: {
+          color: {type: 'color', default: '#00ff00'}
+        },
+        init: function () {
+          const video = document.querySelector('#video');
+          const videoTexture = new THREE.VideoTexture(video);
+
+          const chromaKeyMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+              videoTexture: { value: videoTexture },
+              keyColor: { value: new THREE.Color(this.data.color) },
+            },
+            vertexShader: `
+              varying vec2 vUv;
+              void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              }
+            `,
+            fragmentShader: `
+              uniform sampler2D videoTexture;
+              uniform vec3 keyColor;
+              varying vec2 vUv;
+              void main() {
+                vec4 videoColor = texture2D(videoTexture, vUv);
+                float alpha = 1.0 - smoothstep(0.0, 1.0, distance(videoColor.rgb, keyColor));
+                gl_FragColor = vec4(videoColor.rgb, alpha);
+              }
+            `,
+            transparent: true,
+          });
+
+          const geometry = new THREE.PlaneGeometry(16, 9);
+          const mesh = new THREE.Mesh(geometry, chromaKeyMaterial);
+          mesh.scale.set(0.075, 0.075, 0.075);
+          this.el.setObject3D('mesh', mesh);
+        }
+      });
+
+      // ビデオエンティティにクロマキーコンポーネントを追加
+      document.querySelector('#video-entity').setAttribute('chroma-key', 'color: #00ff00');
     </script>
   </body>
 </html>
