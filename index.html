@@ -36,10 +36,10 @@
         <video id="video" autoplay loop="true" src="video/shadowVideo.mp4"></video>
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
         <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
-        <a-video src="#video" width="16" height="9" position="0 0.1 0" scale="0.068 0.068 0.068"></a-video>
+        <a-video src="#video" width="16" height="9" position="0 0 0.05" scale="0.065 0.065 0.065"></a-video>
       </a-entity>
 
-      <a-text class="color-red">Ver4.9.2</a-text>
+      <a-text class="color-red">Ver4.9.3</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
@@ -66,7 +66,7 @@
             }
           }
         }
-        // document.querySelector('#video').play(); // 動画がある場合は再生
+        document.querySelector('#video').play(); // 動画がある場合は再生
         btnStart.style.display = 'none';
         btnPause.style.display = 'block';
       });
@@ -84,7 +84,7 @@
             }
           }
         }
-        //document.querySelector('#video').pause(); // 動画がある場合は一時停止
+        document.querySelector('#video').pause(); // 動画がある場合は一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
       });
