@@ -38,71 +38,61 @@
         <a-video src="#video" position="0 0 0.01" width="16" height="9" rotation="0 0 0" scale="0.075 0.075 0.075"></a-video>
       </a-entity>
 
-      <a-text class="color-red">Ver4.4.6</a-text>
+      <a-text class="color-red">Ver4.4.7</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
 
     <script>
-      let isPaused = false;
-      const btnStart = document.getElementById('btn-start');
-      const btnPause = document.getElementById('btn-pause');
-
       btnStart.addEventListener('click', () => {
-        const model = document.querySelector('#item');
-        if (model) {
-          const animationMixer = model.components['animation-mixer'];
-          if (animationMixer) {
-            const actions = animationMixer.mixer._actions;
-            if (actions.length > 0) {
-              const action = actions[0];
-              if (isPaused) {
-                action.paused = false; // 一時停止を解除
-              } else {
-                action.play();
-              }
-              isPaused = false;
-            }
-          }
-        }
-        document.querySelector('#video').play(); // 動画の再生
-        btnStart.style.display = 'none';
-        btnPause.style.display = 'block';
-      });
+  const model = document.querySelector('#item');
+  const video = document.querySelector('#video');
 
-      btnPause.addEventListener('click', () => {
-        const model = document.querySelector('#item');
-        if (model) {
-          const animationMixer = model.components['animation-mixer'];
-          if (animationMixer) {
-            const actions = animationMixer.mixer._actions;
-            if (actions.length > 0) {
-              const action = actions[0];
-              action.paused = true; // 一時停止
-              isPaused = true;
-            }
-          }
-        }
-        document.querySelector('#video').pause(); // 動画の一時停止
-        btnPause.style.display = 'none';
-        btnStart.style.display = 'block';
-      });
+  // 動画を再生する
+  video.play();
 
-      AFRAME.registerComponent('stop-animation-on-load', {
-        init: function () {
-          const el = this.el;
-          el.addEventListener('model-loaded', () => {
-            const model = el.getObject3D('mesh');
-            if (model && model.animations) {
-              const mixer = el.components['animation-mixer'].mixer;
-              mixer.stopAllAction();
-            }
-          });
-        }
-      });
+  // 3Dモデルのアニメーションを開始する
+  if (model) {
+    const animationMixer = model.components['animation-mixer'];
+    if (animationMixer) {
+      const actions = animationMixer.mixer._actions;
+      if (actions.length > 0) {
+        const action = actions[0];
+        action.play();
+      }
+    }
+  }
 
-      document.querySelector('#item').setAttribute('stop-animation-on-load', '');
+  // Startボタンを非表示にしてPauseボタンを表示する
+  btnStart.style.display = 'none';
+  btnPause.style.display = 'block';
+});
+
+// Pauseボタンがクリックされた時の処理
+btnPause.addEventListener('click', () => {
+  const model = document.querySelector('#item');
+  const video = document.querySelector('#video');
+
+  // 動画を一時停止する
+  video.pause();
+
+  // 3Dモデルのアニメーションを一時停止する
+  if (model) {
+    const animationMixer = model.components['animation-mixer'];
+    if (animationMixer) {
+      const actions = animationMixer.mixer._actions;
+      if (actions.length > 0) {
+        const action = actions[0];
+        action.paused = true;
+      }
+    }
+  }
+
+  // Pauseボタンを非表示にしてStartボタンを表示する
+  btnPause.style.display = 'none';
+  btnStart.style.display = 'block';
+});
     </script>
   </body>
 </html>
