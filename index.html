@@ -28,11 +28,13 @@
       <a-assets>
         <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
         <a-asset-item id="avatarModel" src="model/model.glb"></a-asset-item>
+        <video id="shadowVideo" autoplay loop="true" src="video/shadowVideo.mp4"></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
+        <!-- <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane> -->
+        <a-video src="#shadowVideo" width="16" height="9" position="0 0 0" scale="0.1 0.1 0.1"></a-video>
         <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
       </a-entity>
 
