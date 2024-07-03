@@ -1,48 +1,63 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <style>
-      .text-color-red {
-        color: #FF0000;
-      }
-    </style>
-  </head>
-  <body>
-    <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" 
-             color-space="sRGB" 
-             renderer="colorManagement: true, physicallyCorrectLights, shadowMapEnabled: true" 
-             vr-mode-ui="enabled: false" 
-             device-orientation-permission-ui="enabled: false">
-      <a-assets>
-        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-        <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
-      </a-assets>
-
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      
-      <a-entity light="type:ambient; intensity: 0.5"></a-entity>
-      <a-entity light="type:directional; intensity: 0.8; castShadow: true;" position="-0.2 1 0.2" 
-                light-shadow="mapSizeWidth: 1024; mapSizeHeight: 1024"></a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-box position="0 0 0" color="#4CC3D9" depth="0.2" height="0.2" width="0.2" shadow="cast: true" 
-               animation="property: rotation; from: 0 0 0; to: 0 360 360; easing: linear; loop: true; dur: 5000;"></a-box>
-        <a-plane position="0 -0.3 0" rotation="-90 0 0" width="1.5" height="1.5" shadow="receive: true" shadow-material></a-plane>
-      </a-entity>
-      <a-text class="text-color-red">Ver3.7</a-text>
-    </a-scene>
-
-    <script>
-      AFRAME.registerComponent('shadow-material', {
-        init: function () {
-          const mesh = this.el.getOrCreateObject3D('mesh');
-          if (mesh) {
-            mesh.material = new THREE.ShadowMaterial({ opacity: 0.5 });
-          }
-        }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-three.prod.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Initialize MindAR
+      const mindarThree = new window.MINDAR.Three({
+        container: document.body,
+        imageTargetSrc: 'https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind'
       });
-    </script>
-  </body>
+
+      const { renderer, scene, camera } = mindarThree;
+
+      // Light setup
+      const ambientLight = new THREE.AmbientLight(0x404040);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(0, 10, 10);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 1024;
+      directionalLight.shadow.mapSize.height = 1024;
+      scene.add(directionalLight);
+
+      // Ground setup
+      const groundGeometry = new THREE.PlaneGeometry(200, 200);
+      const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+      const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+      ground.rotation.x = - Math.PI / 2;
+      ground.position.y = -1;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      // Box setup
+      const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+      const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      box.castShadow = true;
+      box.receiveShadow = true;
+      scene.add(box);
+
+      // Start MindAR
+      await mindarThree.start();
+
+      // Animation loop
+      renderer.setAnimationLoop(() => {
+        box.rotation.x += 0.01;
+        box.rotation.y += 0.01;
+        renderer.render(scene, camera);
+      });
+    });
+  </script>
+</body>
 </html>
