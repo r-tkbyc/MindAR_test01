@@ -30,19 +30,16 @@
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-        <a-asset-item id="avatarModel" src="model/model.glb"></a-asset-item>
-        <!-- <video id="video" autoplay loop="true" src="video/path.mp4"></video> -->
+        <video id="video" autoplay loop="true" src="video/shadowVideo.mp4"></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
-        <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
-        <!-- <a-video src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video> -->
+        <a-video src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video>
       </a-entity>
 
-      <a-text class="color-red">Ver4.9.6</a-text>
+      <a-text class="color-red">Ver1.0</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
@@ -53,59 +50,16 @@
       const btnPause = document.getElementById('btn-pause');
 
       btnStart.addEventListener('click', () => {
-        const model = document.querySelector('#item');
-        if (model) {
-          const animationMixer = model.components['animation-mixer'];
-          if (animationMixer) {
-            const actions = animationMixer.mixer._actions;
-            if (actions.length > 0) {
-              const action = actions[0];
-              if (isPaused) {
-                action.paused = false; // 一時停止を解除
-              } else {
-                action.play();
-              }
-              isPaused = false;
-            }
-          }
-        }
-        // document.querySelector('#video').play(); // 動画がある場合は再生
+        document.querySelector('#video').play(); // 動画がある場合は再生
         btnStart.style.display = 'none';
         btnPause.style.display = 'block';
       });
 
       btnPause.addEventListener('click', () => {
-        const model = document.querySelector('#item');
-        if (model) {
-          const animationMixer = model.components['animation-mixer'];
-          if (animationMixer) {
-            const actions = animationMixer.mixer._actions;
-            if (actions.length > 0) {
-              const action = actions[0];
-              action.paused = true; // 一時停止
-              isPaused = true;
-            }
-          }
-        }
-        // document.querySelector('#video').pause(); // 動画がある場合は一時停止
+        document.querySelector('#video').pause(); // 動画がある場合は一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
       });
-
-      AFRAME.registerComponent('stop-animation-on-load', {
-        init: function () {
-          const el = this.el;
-          el.addEventListener('model-loaded', () => {
-            const model = el.getObject3D('mesh');
-            if (model && model.animations) {
-              const mixer = el.components['animation-mixer'].mixer;
-              mixer.stopAllAction();
-            }
-          });
-        }
-      });
-
-      document.querySelector('#item').setAttribute('stop-animation-on-load', '');
     </script>
   </body>
 </html>
