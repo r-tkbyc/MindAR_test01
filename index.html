@@ -6,6 +6,9 @@
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
+      .color-red {
+        color: #FF0000;
+      }
       .btn {
         position: absolute;
         bottom: 1rem;
@@ -32,6 +35,8 @@
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
         <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
       </a-entity>
+
+      <a-text class="color-red">Ver4.9.1</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
