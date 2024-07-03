@@ -7,12 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
     <script>
-      AFRAME.registerComponent('shadow-material', {
-        init: function () {
-          this.el.getOrCreateObject3D('mesh').material = new THREE.ShadowMaterial();
-          this.el.getOrCreateObject3D('mesh').material.opacity = 0.5; // 透明度を調整
-        }
-      });
     </script>
 
     <style>
@@ -50,7 +44,7 @@
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start2.5</button>
+    <button id="btn-start" class="btn">Start2.6</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
 
     <script>
@@ -110,6 +104,13 @@
       });
 
       document.querySelector('#item').setAttribute('stop-animation-on-load', '');
+
+      AFRAME.registerComponent('shadow-material', {
+        init: function () {
+          this.el.getOrCreateObject3D('mesh').material = new THREE.ShadowMaterial();
+          this.el.getOrCreateObject3D('mesh').material.opacity = 0.5; // 透明度を調整
+        }
+      });
     </script>
   </body>
 </html>
