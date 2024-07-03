@@ -5,23 +5,44 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
       .text-color { color: #FF0000; }
+      #startButton {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
+    <button id="startButton">Start</button>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <video id="video" autoplay loop="true" muted src="video/shadowVideo.mp4"></video>
+        <video id="video" loop="true" muted src="video/shadowVideo.mp4"></video>
         <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
         <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#video" position="0 0 0" height="9" width="16" rotation="0 0 0" scale="0.075 0.075 0.075"></a-video>
+        <a-video src="#video" position="0 0 0" height="9" width="16" rotation="0 0 0" scale="0.07 0.07 0.07"></a-video>
         <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.005 0.005 0.005" src="#avatarModel" 
                       animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"></a-gltf-model>
       </a-entity>
-      <a-text class="text-color" value="Ver1.2"></a-text>
+      <a-text class="text-color" value="Ver1.3"></a-text>
     </a-scene>
+
+    <script>
+      document.getElementById('startButton').addEventListener('click', function() {
+        var video = document.getElementById('video');
+        video.play();
+      });
+    </script>
   </body>
 </html>
