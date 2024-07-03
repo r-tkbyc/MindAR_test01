@@ -35,12 +35,13 @@
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
         <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
       </a-entity>
+
+      <a-text class="color-red">Ver4.3.1</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
 
-    <a-text class="color-red">Ver14.3</a-text>
     <script>
       let isPaused = false;
       const btnStart = document.getElementById('btn-start');
