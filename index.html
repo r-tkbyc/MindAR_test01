@@ -44,10 +44,13 @@
         <a-entity light="type: directional; castShadow: true;" position="0.2 2 0.5"></a-entity>
         <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90" shadow="receive: true"></a-plane>
         <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" shadow="cast: true;" animation-mixer></a-gltf-model>
+        <a-entity animation="property: position; to: 0 1 0; easing: easeInOutQuad; loop: true; dur: 3000; dir: alternate">
+          <a-box position="0 1.5 -3" rotation="0 45 0" scale="0.5 0.5 0.5" color="#4CC3D9" animation="property: rotation; from: 0 0 0; to: 0 360 360; easing: linear; loop: true; dur: 10000;" shadow="cast: true;"></a-box>
+        </a-entity>
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start2.0</button>
+    <button id="btn-start" class="btn">Start2.1</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
 
     <script>
