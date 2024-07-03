@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      .btn {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #eee;
+        color: #333;
+        padding: 1rem 2.5rem;
+        border: 0;
+        border-radius: 0.3rem;
+        margin: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+        <a-asset-item id="avatarModel" src="model/model.glb"></a-asset-item>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
+        <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
+      </a-entity>
+    </a-scene>
+
+    <button id="btn-start" class="btn">Start</button>
+    <button id="btn-pause" class="btn" style="display: none;">Pause</button>
+    <script>
+      let isPaused = false;
+      const btnStart = document.getElementById('btn-start');
+      const btnPause = document.getElementById('btn-pause');
+
+      btnStart.addEventListener('click', () => {
+        const model = document.querySelector('#item');
+        if (model) {
+          const animationMixer = model.components['animation-mixer'];
+          if (animationMixer) {
+            const actions = animationMixer.mixer._actions;
+            if (actions.length > 0) {
+              const action = actions[0];
+              if (isPaused) {
+                action.paused = false; // 一時停止を解除
+              } else {
+                action.play();
+              }
+              isPaused = false;
+            }
+          }
+        }
+        btnStart.style.display = 'none';
+        btnPause.style.display = 'block';
+      });
+
+      btnPause.addEventListener('click', () => {
+        const model = document.querySelector('#item');
+        if (model) {
+          const animationMixer = model.components['animation-mixer'];
+          if (animationMixer) {
+            const actions = animationMixer.mixer._actions;
+            if (actions.length > 0) {
+              const action = actions[0];
+              action.paused = true; // 一時停止
+              isPaused = true;
+            }
+          }
+        }
+        btnPause.style.display = 'none';
+        btnStart.style.display = 'block';
+      });
+
+      AFRAME.registerComponent('stop-animation-on-load', {
+        init: function () {
+          const el = this.el;
+          el.addEventListener('model-loaded', () => {
+            const model = el.getObject3D('mesh');
+            if (model && model.animations) {
+              const mixer = el.components['animation-mixer'].mixer;
+              mixer.stopAllAction();
+            }
+          });
+        }
+      });
+
+      document.querySelector('#item').setAttribute('stop-animation-on-load', '');
+    </script>
+  </body>
+</html>
