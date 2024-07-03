@@ -12,7 +12,7 @@
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" 
              color-space="sRGB" 
-             renderer="colorManagement: true, physicallyCorrectLights" 
+             renderer="colorManagement: true, physicallyCorrectLights, , shadowMapEnabled: true" 
              vr-mode-ui="enabled: false" 
              device-orientation-permission-ui="enabled: false">
       <a-assets>
@@ -30,7 +30,7 @@
                animation="property: rotation; from: 0 0 0; to: 0 360 360; easing: linear; loop: true; dur: 5000;"></a-box>
         <a-plane position="0 -0.3 0" rotation="-90 0 0" width="1.5" height="1.5" color="#7BC8A4" shadow="receive: true" shadow-material></a-plane>
       </a-entity>
-      <a-text class="text-color-red">Ver3.5</a-text>
+      <a-text class="text-color-red">Ver3.6</a-text>
     </a-scene>
 
     <script>
