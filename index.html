@@ -39,15 +39,15 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0" light="type: ambient; color: #ccc">
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-entity light="type: ambient; color: #ccc"></a-entity>
         <a-entity light="type: directional; castShadow: true;" position="0.2 2 0.5"></a-entity>
-        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
+        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90" shadow="receive: true"></a-plane>
         <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" shadow="cast: true;" animation-mixer></a-gltf-model>
-        <a-plane color="#0f0" position="0 0 0" height="3" width="3" rotation="0 0 0" shadow="receive: true"></a-plane>
       </a-entity>
     </a-scene>
 
-    <button id="btn-start" class="btn">Start1.9</button>
+    <button id="btn-start" class="btn">Start2.0</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
 
     <script>
