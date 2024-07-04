@@ -20,6 +20,23 @@
         border-radius: 0.3rem;
         margin: 0.5rem;
       }
+      .arrow-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #eee;
+        color: #333;
+        padding: 1rem;
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .arrow-btn.left {
+        left: 1rem;
+      }
+      .arrow-btn.right {
+        right: 1rem;
+      }
       .carousel {
         display: none;
       }
@@ -31,28 +48,29 @@
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <video id="video" autoplay loop="true" src="video/shadowVideo.mp4"></video>
-        <img id="image" src="image/imageeee.jpg">
+        <video id="video" loop="true" src="video/shadowVideo.mp4"></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
         <a-video id="carousel-video" class="carousel active" src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video>
-        <a-image id="carousel-image" class="carousel" src="#image" width="16" height="9" position="0 0 0.01" scale="0.65 0.65 0.65"></a-image>
+        <a-image id="carousel-image" class="carousel" src="path/to/image.jpg" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-image>
       </a-entity>
 
-      <a-text class="color-red">Ver1.1</a-text>
+      <a-text class="color-red">Ver1.2</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
-    <button id="btn-next" class="btn">Next</button>
+    <button class="arrow-btn left" id="btn-prev">&lt;</button>
+    <button class="arrow-btn right" id="btn-next">&gt;</button>
 
     <script>
       let isPaused = false;
       const btnStart = document.getElementById('btn-start');
       const btnPause = document.getElementById('btn-pause');
       const btnNext = document.getElementById('btn-next');
+      const btnPrev = document.getElementById('btn-prev');
       const videoElement = document.querySelector('#video');
       const carouselItems = document.querySelectorAll('.carousel');
       let currentIndex = 0;
@@ -77,6 +95,11 @@
 
       btnNext.addEventListener('click', () => {
         currentIndex = (currentIndex + 1) % carouselItems.length;
+        updateCarousel();
+      });
+
+      btnPrev.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
         updateCarousel();
       });
 
