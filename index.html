@@ -1,3 +1,8 @@
+<!-- 
+ボタンを設置し、モデルのアニメーションスタートを制御
+動画がある場合、これも同じタイミングでスタートされる
+-->
+
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,99 +25,87 @@
         border-radius: 0.3rem;
         margin: 0.5rem;
       }
-      .arrow-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: #eee;
-        color: #333;
-        padding: 1rem;
-        border: 0;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-      .arrow-btn.left {
-        left: 1rem;
-      }
-      .arrow-btn.right {
-        right: 1rem;
-      }
-      .carousel {
-        display: none;
-      }
-      .carousel.active {
-        display: block;
-      }
     </style>
   </head>
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <video id="video" loop="true" src="video/shadowVideo.mp4" crossorigin="anonymous"></video>
+        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+        <a-asset-item id="avatarModel" src="model/model.glb"></a-asset-item>
+        <!-- <video id="video" autoplay loop="true" src="video/path.mp4"></video> -->
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video id="carousel-video" class="carousel active" src="#video" width="4" height="2.25" position="0 0 0.01" scale="0.5 0.5 0.5"></a-video>
-        <a-image id="carousel-image" class="carousel" src="path/to/image.jpg" width="4" height="2.25" position="0 0 0.01" scale="0.5 0.5 0.5"></a-image>
+        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
+        <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
+        <!-- <a-video src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video> -->
       </a-entity>
 
-      <a-text class="color-red">Ver1.3</a-text>
+      <a-text class="color-red">Ver4.9.6</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
-    <button class="arrow-btn left" id="btn-prev">&lt;</button>
-    <button class="arrow-btn right" id="btn-next">&gt;</button>
-
     <script>
       let isPaused = false;
       const btnStart = document.getElementById('btn-start');
       const btnPause = document.getElementById('btn-pause');
-      const btnNext = document.getElementById('btn-next');
-      const btnPrev = document.getElementById('btn-prev');
-      const videoElement = document.querySelector('#video');
-      const carouselItems = document.querySelectorAll('.carousel');
-      let currentIndex = 0;
-
-      function updateCarousel() {
-        carouselItems.forEach((item, index) => {
-          item.classList.toggle('active', index === currentIndex);
-        });
-
-        // ビデオが表示されている場合のみ再生を制御
-        if (carouselItems[currentIndex].id === 'carousel-video' && !isPaused) {
-          videoElement.play();
-        } else {
-          videoElement.pause();
-        }
-      }
 
       btnStart.addEventListener('click', () => {
-        videoElement.play(); // 動画がある場合は再生
-        isPaused = false;
+        const model = document.querySelector('#item');
+        if (model) {
+          const animationMixer = model.components['animation-mixer'];
+          if (animationMixer) {
+            const actions = animationMixer.mixer._actions;
+            if (actions.length > 0) {
+              const action = actions[0];
+              if (isPaused) {
+                action.paused = false; // 一時停止を解除
+              } else {
+                action.play();
+              }
+              isPaused = false;
+            }
+          }
+        }
+        // document.querySelector('#video').play(); // 動画がある場合は再生
         btnStart.style.display = 'none';
         btnPause.style.display = 'block';
       });
 
       btnPause.addEventListener('click', () => {
-        videoElement.pause(); // 動画がある場合は一時停止
-        isPaused = true;
+        const model = document.querySelector('#item');
+        if (model) {
+          const animationMixer = model.components['animation-mixer'];
+          if (animationMixer) {
+            const actions = animationMixer.mixer._actions;
+            if (actions.length > 0) {
+              const action = actions[0];
+              action.paused = true; // 一時停止
+              isPaused = true;
+            }
+          }
+        }
+        // document.querySelector('#video').pause(); // 動画がある場合は一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
       });
 
-      btnNext.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % carouselItems.length;
-        updateCarousel();
+      AFRAME.registerComponent('stop-animation-on-load', {
+        init: function () {
+          const el = this.el;
+          el.addEventListener('model-loaded', () => {
+            const model = el.getObject3D('mesh');
+            if (model && model.animations) {
+              const mixer = el.components['animation-mixer'].mixer;
+              mixer.stopAllAction();
+            }
+          });
+        }
       });
 
-      btnPrev.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
-        updateCarousel();
-      });
-
-      document.addEventListener('DOMContentLoaded', updateCarousel);
+      document.querySelector('#item').setAttribute('stop-animation-on-load', '');
     </script>
   </body>
 </html>
