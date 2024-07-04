@@ -1,10 +1,14 @@
+<!-- 
+ボタンを設置し、モデルのアニメーションスタートを制御
+動画がある場合、これも同じタイミングでスタートされる
+-->
+
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
       .color-red {
         color: #FF0000;
@@ -26,103 +30,82 @@
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <video id="video" autoplay loop="true" src="video/shadowVideo.mp4" crossorigin="anonymous"></video>
+        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+        <a-asset-item id="avatarModel" src="model/model.glb"></a-asset-item>
+        <!-- <video id="video" autoplay loop="true" src="video/path.mp4"></video> -->
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity id="video-entity" geometry="primitive: plane; height: 9; width: 16" position="0 0 0.01" scale="0.065 0.065 0.065"></a-entity>
+        <a-plane src="#card" position="0 0 0" height="1" width="0.552" rotation="0 0 90"></a-plane>
+        <a-gltf-model id="item" rotation="40 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#avatarModel" animation-mixer></a-gltf-model>
+        <!-- <a-video src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video> -->
       </a-entity>
 
-      <a-text class="color-red">ver1.5</a-text>
+      <a-text class="color-red">Ver4.9.6</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
     <script>
-      const chromaKeyShader = {
-        schema: {
-          src: { type: 'map' },
-          color: { default: { x: 0.0, y: 1.0, z: 0.0 }, type: 'vec3', is: 'uniform' },
-          opacity: { default: 1.0, is: 'uniform' },
-          transparent: { default: true, is: 'uniform' },
-        },
-
-        init: function (data) {
-          const videoTexture = new THREE.VideoTexture(data.src);
-          videoTexture.minFilter = THREE.LinearFilter;
-          this.material = new THREE.ShaderMaterial({
-            uniforms: {
-              color: { type: 'c', value: data.color },
-              myTexture: { type: 't', value: videoTexture },
-              opacity: { type: 'f', value: data.opacity },
-            },
-            vertexShader: this.vertexShader,
-            fragmentShader: this.fragmentShader,
-            transparent: true,
-          });
-
-          this.material.opacity = data.opacity;
-          this.el.getObject3D('mesh').material = this.material;
-        },
-
-        update: function (data) {
-          this.material.uniforms.color.value = data.color;
-          this.material.uniforms.myTexture.value = new THREE.VideoTexture(data.src);
-          this.material.uniforms.opacity.value = data.opacity;
-          this.material.uniformsNeedUpdate = true;
-        },
-
-        vertexShader: `
-          varying vec2 vUv;
-          void main(void) {
-            vUv = uv;
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_Position = projectionMatrix * mvPosition;
-          }
-        `,
-
-        fragmentShader: `
-          uniform sampler2D myTexture;
-          uniform vec3 color;
-          uniform float opacity;
-          varying vec2 vUv;
-          void main(void) {
-            vec3 tColor = texture2D(myTexture, vUv).rgb;
-            float alpha = (length(tColor - color) - 0.5) * 7.0;
-            gl_FragColor = vec4(tColor, alpha * opacity);
-          }
-        `,
-      };
-
-      // Register the shader as a component
-      AFRAME.registerComponent('chroma-key-shader', chromaKeyShader);
-
       let isPaused = false;
       const btnStart = document.getElementById('btn-start');
       const btnPause = document.getElementById('btn-pause');
 
       btnStart.addEventListener('click', () => {
-        document.querySelector('#video').play();
+        const model = document.querySelector('#item');
+        if (model) {
+          const animationMixer = model.components['animation-mixer'];
+          if (animationMixer) {
+            const actions = animationMixer.mixer._actions;
+            if (actions.length > 0) {
+              const action = actions[0];
+              if (isPaused) {
+                action.paused = false; // 一時停止を解除
+              } else {
+                action.play();
+              }
+              isPaused = false;
+            }
+          }
+        }
+        // document.querySelector('#video').play(); // 動画がある場合は再生
         btnStart.style.display = 'none';
         btnPause.style.display = 'block';
       });
 
       btnPause.addEventListener('click', () => {
-        document.querySelector('#video').pause();
+        const model = document.querySelector('#item');
+        if (model) {
+          const animationMixer = model.components['animation-mixer'];
+          if (animationMixer) {
+            const actions = animationMixer.mixer._actions;
+            if (actions.length > 0) {
+              const action = actions[0];
+              action.paused = true; // 一時停止
+              isPaused = true;
+            }
+          }
+        }
+        // document.querySelector('#video').pause(); // 動画がある場合は一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
       });
 
-      const videoEntity = document.querySelector('#video-entity');
-
-      videoEntity.addEventListener('loadeddata', () => {
-        videoEntity.setAttribute('chroma-key-shader', {
-          src: '#video',
-          color: '0 1 0', // Green color
-          opacity: 1.0,
-        });
+      AFRAME.registerComponent('stop-animation-on-load', {
+        init: function () {
+          const el = this.el;
+          el.addEventListener('model-loaded', () => {
+            const model = el.getObject3D('mesh');
+            if (model && model.animations) {
+              const mixer = el.components['animation-mixer'].mixer;
+              mixer.stopAllAction();
+            }
+          });
+        }
       });
+
+      document.querySelector('#item').setAttribute('stop-animation-on-load', '');
     </script>
   </body>
 </html>
