@@ -4,6 +4,7 @@
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
       .color-red {
         color: #FF0000;
@@ -26,15 +27,14 @@
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
         <video id="video" autoplay loop="true" src="video/shadowVideo.mp4"></video>
-        <a-asset-item id="chromakey-shader" src="https://cdn.jsdelivr.net/gh/c-frame/chromakey@main/shaders/chromakey.glsl"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065" material="shader: chromakey; src: #video; color: #00ff00;"></a-video>
+        <a-entity id="video-entity" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-entity>
       </a-entity>
 
-      <a-text class="color-red">Ver1.1</a-text>
+      <a-text class="color-red">Ver1.2</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
@@ -54,6 +54,43 @@
         document.querySelector('#video').pause(); // 動画がある場合は一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
+      });
+
+      // Three.jsを使ってクロマキー処理を行う
+      const video = document.querySelector('#video');
+      const videoEntity = document.querySelector('#video-entity');
+
+      video.addEventListener('play', () => {
+        const texture = new THREE.VideoTexture(video);
+        const material = new THREE.ShaderMaterial({
+          uniforms: {
+            texture: { value: texture },
+            keyColor: { value: new THREE.Color(0x00ff00) },
+          },
+          vertexShader: `
+            varying vec2 vUv;
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: `
+            uniform sampler2D texture;
+            uniform vec3 keyColor;
+            varying vec2 vUv;
+            void main() {
+              vec4 color = texture2D(texture, vUv);
+              float alpha = 1.0 - step(0.1, length(color.rgb - keyColor));
+              gl_FragColor = vec4(color.rgb, alpha);
+            }
+          `,
+          transparent: true,
+        });
+
+        videoEntity.setObject3D('mesh', new THREE.Mesh(
+          new THREE.PlaneGeometry(16, 9),
+          material
+        ));
       });
     </script>
   </body>
