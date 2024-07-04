@@ -1,8 +1,3 @@
-<!-- 
-ボタンを設置し、モデルのアニメーションスタートを制御
-動画がある場合、これも同じタイミングでスタートされる
--->
-
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,40 +20,67 @@
         border-radius: 0.3rem;
         margin: 0.5rem;
       }
+      .carousel {
+        display: none;
+      }
+      .carousel.active {
+        display: block;
+      }
     </style>
   </head>
   <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
         <video id="video" autoplay loop="true" src="video/shadowVideo.mp4"></video>
+        <img id="image" src="image/imageeee.jpg">
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video>
+        <a-video id="carousel-video" class="carousel active" src="#video" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-video>
+        <a-image id="carousel-image" class="carousel" src="#image" width="16" height="9" position="0 0 0.01" scale="0.65 0.65 0.65"></a-image>
       </a-entity>
 
-      <a-text class="color-red">Ver1.0</a-text>
+      <a-text class="color-red">Ver1.1</a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
     <button id="btn-pause" class="btn" style="display: none;">Pause</button>
+    <button id="btn-next" class="btn">Next</button>
+
     <script>
       let isPaused = false;
       const btnStart = document.getElementById('btn-start');
       const btnPause = document.getElementById('btn-pause');
+      const btnNext = document.getElementById('btn-next');
+      const videoElement = document.querySelector('#video');
+      const carouselItems = document.querySelectorAll('.carousel');
+      let currentIndex = 0;
+
+      function updateCarousel() {
+        carouselItems.forEach((item, index) => {
+          item.classList.toggle('active', index === currentIndex);
+        });
+      }
 
       btnStart.addEventListener('click', () => {
-        document.querySelector('#video').play(); // 動画がある場合は再生
+        videoElement.play(); // 動画がある場合は再生
         btnStart.style.display = 'none';
         btnPause.style.display = 'block';
       });
 
       btnPause.addEventListener('click', () => {
-        document.querySelector('#video').pause(); // 動画がある場合は一時停止
+        videoElement.pause(); // 動画がある場合は一時停止
         btnPause.style.display = 'none';
         btnStart.style.display = 'block';
       });
+
+      btnNext.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % carouselItems.length;
+        updateCarousel();
+      });
+
+      document.addEventListener('DOMContentLoaded', updateCarousel);
     </script>
   </body>
 </html>
