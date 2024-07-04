@@ -34,7 +34,7 @@
         <a-entity id="video-entity" width="16" height="9" position="0 0 0.01" scale="0.065 0.065 0.065"></a-entity>
       </a-entity>
 
-      <a-text class="color-red">Ver1.3</a-text>
+      <a-text class="color-red" value="Ver1.0" position="0 1.5 0"></a-text>
     </a-scene>
 
     <button id="btn-start" class="btn">Start</button>
@@ -61,15 +61,16 @@
       const videoEntity = document.querySelector('#video-entity');
 
       video.addEventListener('loadeddata', () => {
-        const texture = new THREE.VideoTexture(video);
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.format = THREE.RGBAFormat;
+        const videoTexture = new THREE.VideoTexture(video);
+        videoTexture.minFilter = THREE.LinearFilter;
+        videoTexture.magFilter = THREE.LinearFilter;
+        videoTexture.format = THREE.RGBAFormat;
 
-        const material = new THREE.ShaderMaterial({
+        const chromaKeyMaterial = new THREE.ShaderMaterial({
           uniforms: {
-            texture: { value: texture },
-            keyColor: { value: new THREE.Color(0x00ff00) },
+            myTexture: { type: 't', value: videoTexture },
+            color: { type: 'c', value: new THREE.Color(0x00ff00) },
+            opacity: { type: 'f', value: 1.0 }
           },
           vertexShader: `
             varying vec2 vUv;
@@ -79,20 +80,21 @@
             }
           `,
           fragmentShader: `
-            uniform sampler2D texture;
-            uniform vec3 keyColor;
+            uniform sampler2D myTexture;
+            uniform vec3 color;
+            uniform float opacity;
             varying vec2 vUv;
             void main() {
-              vec4 color = texture2D(texture, vUv);
-              float alpha = 1.0 - step(0.1, length(color.rgb - keyColor));
-              gl_FragColor = vec4(color.rgb, alpha);
+              vec3 tColor = texture2D(myTexture, vUv).rgb;
+              float a = (length(tColor - color) - 0.5) * 7.0;
+              gl_FragColor = vec4(tColor, a * opacity);
             }
           `,
-          transparent: true,
+          transparent: true
         });
 
         const geometry = new THREE.PlaneGeometry(16, 9);
-        const mesh = new THREE.Mesh(geometry, material);
+        const mesh = new THREE.Mesh(geometry, chromaKeyMaterial);
         videoEntity.setObject3D('mesh', mesh);
       });
     </script>
